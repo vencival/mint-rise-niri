@@ -1,0 +1,400 @@
+//- ==============================================================================
+//- INPUT CONFIGURATION
+//- Keyboard layout, touchpad behavior, mouse settings and focus policies
+//- ==============================================================================
+input {
+    keyboard {
+        xkb {
+            //- Set keyboard layout to US/Russian with Alt+Shift toggle
+            layout "us, ru"
+            options "grp:alt_shift_toggle"
+        }
+        //- Enable numlock on startup (uncomment if needed)
+        //numlock
+    }
+
+    touchpad {
+        tap                     //- Enable tap-to-click
+        natural-scroll          //- Enable natural scrolling direction
+    }
+
+    mouse {
+        //- Mouse-specific settings can be added here if needed
+    }
+
+    trackpoint {
+        //- Trackpoint-specific settings can be added here if needed
+    }
+
+    //- Automatically focus windows when hovering over them
+    //- max-scroll-amount="50%" limits auto-focus to windows mostly on screen
+    focus-follows-mouse max-scroll-amount="50%"
+}
+
+//- ==============================================================================
+//- OUTPUT CONFIGURATION
+//- Monitor resolution, scaling, rotation and positioning
+//- ==============================================================================
+output "eDP-1" {
+    mode "1920x1080@120.030"    //- Native resolution and refresh rate
+    scale 1.0                   //- No fractional scaling
+    transform "normal"          //- Standard orientation
+    position x=1280 y=0         //- Position in global coordinate space
+}
+
+//- ==============================================================================
+//- LAYOUT CONFIGURATION
+//- Window gaps, borders, shadows, column widths and visual effects
+//- ==============================================================================
+layout {
+    // Внешние отступы между окнами приложений
+    gaps 6
+
+    // Фиксированные зоны для панелей (задают отступ окон от краев экрана)
+    struts {
+        // Оставляем 40 пикселей сверху под панель Waybar (32px высота панели + 8px отступ)
+        top 0 
+        bottom 0
+        left 0
+        right 0
+    }
+    background-color "transparent"
+
+    center-focused-column "never"  //- Keep focused column at edge, not centered
+
+    //- Preset column widths cycled by Mod+R
+    preset-column-widths {
+        proportion 0.3333
+        proportion 0.3333
+        proportion 0.66667
+    }
+
+    default-column-width { proportion 0.5; }  //- New windows take half screen
+
+    //- Focus ring disabled - using border instead
+    focus-ring {
+        off
+    }
+
+    //- Mint-green accent border for active window
+    border {
+        width 2
+        active-color "#a0f0c0"      //- Mint green accent
+        inactive-color "#303030"     //- Dark gray for inactive
+        urgent-color "#4a5353"       //- Subtle color for urgent windows
+    }
+
+    //- Soft drop shadow for depth perception
+    shadow {
+        on
+        softness 5
+        spread 0
+        offset x=0 y=0
+        color "#4a5353"
+    }
+}
+//- BLUR
+blur {
+    // Количество проходов размытия. Больше проходов = сильнее и "гуще" размытие.
+    // Рекомендуемые значения: от 2 до 5. По умолчанию: 2
+    passes 3
+
+    // Смещение размытия. Увеличение этого параметра делает картинку более размытой.
+    // Рекомендуемые значения: от 1.0 до 3.0. По умолчанию: 1.8
+    offset 2.0
+
+    // Дополнительные параметры (по желанию):
+    noise 0.02       // Небольшой шум, убирающий цветовые артефакты градиента
+    saturation 1.1   // Насыщенность цветов под блюром (1.0 — стандартная)
+}
+
+// 2. ПРАВИЛО ДЛЯ ПАНЕЛИ (В самом конце файла, на корневом уровне)
+layer-rule {
+    match namespace="waybar"
+    
+    background-effect {
+        blur true     // Просто включаем размытие, настройки применятся из блока выше
+        xray false    // Выключает статический xray-блюр, делая размытие динамическим
+    }
+    
+    block-out-from "screencast"
+}
+
+//- ==============================================================================
+//- STARTUP APPLICATIONS
+//- Programs launched automatically when Niri starts
+//- ==============================================================================
+spawn-sh-at-startup "waybar &"                    //- Status bar
+spawn-sh-at-startup "swaybg -i ~/wallpaper/mint.png"  //- Wallpaper setter
+spawn-sh-at-startup "brightnessctl set 100%"      //- Max brightness on startup
+
+//- ==============================================================================
+//- OVERVIEW CONFIGURATION
+//- Workspace overview settings and hot corner behavior
+//- ==============================================================================
+//- Отключаем открытие overview по наведению мыши в левый верхний угол
+overview {
+    workspace-shadow {
+        off
+    }
+}
+//- ==============================================================================
+//- HOTKEY OVERLAY
+//- Startup hint overlay showing key bindings
+//- ==============================================================================
+hotkey-overlay {
+    skip-at-startup               //- Hide hints overlay at startup
+}
+
+//- ==============================================================================
+//- CLIENT-SIDE DECORATIONS
+//- Request apps to use server-side decorations when possible
+//- ==============================================================================
+prefer-no-csd                     //- Ask clients to omit CSD for cleaner borders
+
+//- ==============================================================================
+//- SCREENSHOT CONFIGURATION
+//- Path and naming format for saved screenshots
+//- ==============================================================================
+screenshot-path "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png"
+
+//- ==============================================================================
+//- ANIMATION CONFIGURATION
+//- Spring-based animation parameters for smooth transitions
+//- ==============================================================================
+animations {
+    slowdown 1.0                  //- Global animation speed multiplier
+
+    workspace-switch {
+        spring stiffness=400 damping-ratio=1.0 epsilon=0.0001
+    }
+
+    window-movement {
+        spring stiffness=400 damping-ratio=1.0 epsilon=0.0001
+    }
+
+    window-open {
+        spring stiffness=400 damping-ratio=0.85 epsilon=0.0001
+    }
+
+    window-close {
+        spring stiffness=400 damping-ratio=0.9 epsilon=0.0001
+    }
+
+    window-resize {
+        spring stiffness=400 damping-ratio=1.0 epsilon=0.0001
+    }
+}
+
+//- ==============================================================================
+//- WINDOW RULES
+//- Per-application overrides for floating, blur, corners etc.
+//- ==============================================================================
+
+//- Firefox PiP player opens as floating window
+window-rule {
+    match app-id=r#"firefox$"# title="^Picture-in-Picture$"
+    open-floating true
+}
+
+//- Rounded corners disabled for sharp aesthetic
+window-rule {
+    geometry-corner-radius 5
+    clip-to-geometry true
+}
+
+//- Alacritty terminal gets background blur effect
+window-rule {
+    match app-id="^Alacritty$"
+    background-effect {
+        blur true                 //- Enable blur behind terminal
+        xray true                 //- Blur only wallpaper (GPU efficient)
+        noise 0.02                //- Reduce color banding artifacts
+        saturation 1.2            //- Slightly boost background colors
+    }
+}
+
+//- ==============================================================================
+//- CURSOR CONFIGURATION
+//- Theme and size for the mouse cursor
+//- ==============================================================================
+cursor {
+    xcursor-theme "Bibata-Modern-Ice"
+    xcursor-size 21
+}
+
+//- ==============================================================================
+//- LAYER RULES
+//- Special handling for wallpapers, launchers and other layer surfaces
+//- ==============================================================================
+layer-rule {
+    match namespace="^wallpaper$"
+    place-within-backdrop true    //- Treat wallpaper as backdrop layer
+}
+
+layer-rule {
+    match namespace="^launcher$"
+    shadow {
+        on                        //- Add shadow to launcher popups
+    }
+}
+//- ==============================================================================
+//- KEY BINDINGS
+//- All keyboard shortcuts organized by function
+//- ==============================================================================
+binds {
+    //- --- Utility & Overlays ---
+    Mod+Shift+Slash { show-hotkey-overlay; }          //- Show hotkey help
+    Mod+O { spawn-sh "pkill waybar || waybar"; }   //- Toggle Waybar
+    Mod+Q repeat=false { close-window; }              //- Close focused window
+
+    //- --- Application Launchers ---
+    Mod+Return hotkey-overlay-title="Open a Terminal: alacritty" { spawn "alacritty"; }
+    Mod+D hotkey-overlay-title="Run an Application: rofi" { spawn "rofi" "-show" "drun" "-icons" "-no-lazy-grab"; }
+
+    //- --- Audio & Brightness ---
+    Mod+Alt+Minus { spawn-sh "amixer set Master 5%-"; }       //- Volume down
+    Mod+Alt+Equal { spawn-sh "amixer set Master 5%+"; }       //- Volume up
+    XF86MonBrightnessUp allow-when-locked=true { spawn "brightnessctl" "--class=backlight" "set" "+2%"; }
+    XF86MonBrightnessDown allow-when-locked=true { spawn "brightnessctl" "--class=backlight" "set" "2%-"; }
+    Super+Alt+S allow-when-locked=true hotkey-overlay-title=null { spawn-sh "pkill orca || exec orca"; }  //- Screen reader toggle
+
+    //- --- Column Navigation ---
+    Mod+Left  { focus-column-left; }
+    Mod+Right { focus-column-right; }
+    Mod+H     { focus-column-left; }
+    Mod+L     { focus-column-right; }
+    Mod+Home  { focus-column-first; }
+    Mod+End   { focus-column-last; }
+
+    //- --- Window Navigation Within Column ---
+    Mod+Down  { focus-window-down; }
+    Mod+Up    { focus-window-up; }
+    Mod+J     { focus-window-down; }
+    Mod+K     { focus-window-up; }
+
+    //- --- Move Columns ---
+    Mod+Ctrl+Left  { move-column-left; }
+    Mod+Ctrl+Right { move-column-right; }
+    Mod+Ctrl+H     { move-column-left; }
+    Mod+Ctrl+L     { move-column-right; }
+    Mod+Ctrl+Home  { move-column-to-first; }
+    Mod+Ctrl+End   { move-column-to-last; }
+
+    //- --- Move Windows Within Column ---
+    Mod+Ctrl+Down  { move-window-down; }
+    Mod+Ctrl+Up    { move-window-up; }
+    Mod+Ctrl+J     { move-window-down; }
+    Mod+Ctrl+K     { move-window-up; }
+
+    //- --- Monitor Navigation ---
+    Mod+Shift+Left  { focus-monitor-left; }
+    Mod+Shift+Right { focus-monitor-right; }
+    Mod+Shift+Up    { focus-monitor-up; }
+    Mod+Shift+Down  { focus-monitor-down; }
+    Mod+Shift+H     { focus-monitor-left; }
+    Mod+Shift+L     { focus-monitor-right; }
+    Mod+Shift+K     { focus-monitor-up; }
+    Mod+Shift+J     { focus-monitor-down; }
+
+    //- --- Move Columns Between Monitors ---
+    Mod+Shift+Ctrl+Left  { move-column-to-monitor-left; }
+    Mod+Shift+Ctrl+Right { move-column-to-monitor-right; }
+    Mod+Shift+Ctrl+Up    { move-column-to-monitor-up; }
+    Mod+Shift+Ctrl+Down  { move-column-to-monitor-down; }
+    Mod+Shift+Ctrl+H     { move-column-to-monitor-left; }
+    Mod+Shift+Ctrl+L     { move-column-to-monitor-right; }
+    Mod+Shift+Ctrl+K     { move-column-to-monitor-up; }
+    Mod+Shift+Ctrl+J     { move-column-to-monitor-down; }
+
+    //- --- Workspace Navigation ---
+    Mod+Page_Down { focus-workspace-down; }
+    Mod+Page_Up   { focus-workspace-up; }
+    Mod+U         { focus-workspace-down; }
+    Mod+I         { focus-workspace-up; }
+
+    //- --- Move Columns to Workspaces ---
+    Mod+Ctrl+Page_Down { move-column-to-workspace-down; }
+    Mod+Ctrl+Page_Up   { move-column-to-workspace-up; }
+    Mod+Ctrl+U         { move-column-to-workspace-down; }
+    Mod+Ctrl+I         { move-column-to-workspace-up; }
+
+    //- --- Move Entire Workspaces ---
+    Mod+Shift+Page_Down { move-workspace-down; }
+    Mod+Shift+Page_Up   { move-workspace-up; }
+    Mod+Shift+U         { move-workspace-down; }
+    Mod+Shift+I         { move-workspace-up; }
+
+    //- --- Mouse Wheel Workspace Switching ---
+    Mod+WheelScrollDown      cooldown-ms=150 { focus-workspace-down; }
+    Mod+WheelScrollUp        cooldown-ms=150 { focus-workspace-up; }
+    Mod+Ctrl+WheelScrollDown cooldown-ms=150 { move-column-to-workspace-down; }
+    Mod+Ctrl+WheelScrollUp   cooldown-ms=150 { move-column-to-workspace-up; }
+
+    //- --- Horizontal Scrolling ---
+    Mod+WheelScrollRight      { focus-column-right; }
+    Mod+WheelScrollLeft       { focus-column-left; }
+    Mod+Ctrl+WheelScrollRight { move-column-right; }
+    Mod+Ctrl+WheelScrollLeft  { move-column-left; }
+    Mod+Shift+WheelScrollDown      { focus-column-right; }
+    Mod+Shift+WheelScrollUp        { focus-column-left; }
+    Mod+Ctrl+Shift+WheelScrollDown { move-column-right; }
+    Mod+Ctrl+Shift+WheelScrollUp   { move-column-left; }
+
+    //- --- Direct Workspace Access ---
+    Mod+1 { focus-workspace 1; }
+    Mod+2 { focus-workspace 2; }
+    Mod+3 { focus-workspace 3; }
+    Mod+4 { focus-workspace 4; }
+    Mod+5 { focus-workspace 5; }
+    Mod+6 { focus-workspace 6; }
+    Mod+7 { focus-workspace 7; }
+    Mod+8 { focus-workspace 8; }
+    Mod+9 { focus-workspace 9; }
+
+    //- --- Move Columns to Specific Workspaces ---
+    Mod+Ctrl+1 { move-column-to-workspace 1; }
+    Mod+Ctrl+2 { move-column-to-workspace 2; }
+    Mod+Ctrl+3 { move-column-to-workspace 3; }
+    Mod+Ctrl+4 { move-column-to-workspace 4; }
+    Mod+Ctrl+5 { move-column-to-workspace 5; }
+    Mod+Ctrl+6 { move-column-to-workspace 6; }
+    Mod+Ctrl+7 { move-column-to-workspace 7; }
+    Mod+Ctrl+8 { move-column-to-workspace 8; }
+    Mod+Ctrl+9 { move-column-to-workspace 9; }
+
+    //- --- Column Manipulation ---
+    Mod+BracketLeft  { consume-or-expel-window-left; }
+    Mod+BracketRight { consume-or-expel-window-right; }
+    Mod+Comma        { consume-window-into-column; }
+    Mod+Period       { expel-window-from-column; }
+
+    //- --- Width & Height Adjustment ---
+    Mod+R             { switch-preset-column-width; }
+    Mod+Shift+R       { switch-preset-window-height; }
+    Mod+Ctrl+R        { reset-window-height; }
+    Mod+F             { maximize-column; }
+    Mod+Ctrl+F        { expand-column-to-available-width; }
+    Mod+C             { center-column; }
+    Mod+Ctrl+C        { center-visible-columns; }
+    Mod+Minus         { set-column-width "-10%"; }
+    Mod+Equal         { set-column-width "+10%"; }
+    Mod+Shift+Minus   { set-window-height "-10%"; }
+    Mod+Shift+Equal   { set-window-height "+10%"; }
+
+    //- --- Floating & Tabbed Modes ---
+    Mod+V       { toggle-window-floating; }
+    Mod+Shift+V { switch-focus-between-floating-and-tiling; }
+    Mod+Shift+C       { toggle-column-tabbed-display; }
+
+    //- --- Screenshots ---
+    Mod+Shift+S { screenshot; }
+    Mod+Ctrl+S  { screenshot-screen; }
+    Alt+Print   { screenshot-window; }
+
+    //- --- System Actions ---
+    Mod+Escape allow-inhibiting=false { toggle-keyboard-shortcuts-inhibit; }  //- Escape hatch for inhibitors
+    Mod+Shift+E { quit; }                                                     //- Quit Niri (with confirmation)
+    Ctrl+Alt+Delete { quit; }                                                 //- Alternative quit
+    Mod+Shift+P { power-off-monitors; }                                       //- DPMS off
+}

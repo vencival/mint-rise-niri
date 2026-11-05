@@ -1,0 +1,25 @@
+# Цветовая схема (тёмная тема Catppuccin-like)
+set default-bg "#1e1e2e"
+set default-fg "#cdd6f4"
+
+# Выделение текста (исправленные имена опций!)
+set selection-color "#f5c2e7"
+
+# Статусбар
+set statusbar-bg "#181825"
+set statusbar-fg "#cdd6f4"
+
+# Шрифт
+set font "Monospace 14"
+
+# Отступы между страницами
+set page-padding 10
+
+# Автоматически подстраивать под ширину окна
+set adjust-open "width"
+
+# Показывать имя файла в заголовке
+set window-title-basename true
+
+# Режим отображения
+set recolor false

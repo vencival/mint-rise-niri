@@ -1,0 +1,75 @@
+{
+  "$schema": "https://github.com/fastfetch-cli/fastfetch/raw/dev/doc/json_schema.json",
+  "logo": {
+    // Используем системную переменную $HOME для точного указания пути
+    "source": "$HOME/.config/fastfetch/ascii_logo.txt",
+    // Исправлено: значение "ansi" заменено на стандартное "file"
+    "type": "file",
+    "padding": {
+      "top": 0,
+      "left": 2,
+      "right": 4
+    }
+  },
+  "modules": [
+    "title",
+    "separator",
+    {
+      "type": "os",
+      "key": "OS",
+      "keyColor": "#a0f0c0"
+    },
+    {
+      "type": "kernel",
+      "key": "Kernel",
+      "keyColor": "#a0f0c0"
+    },
+    {
+      "type": "shell",
+      "key": "Shell",
+      "keyColor": "#a0f0c0"
+    },
+    {
+      "type": "terminal",
+      "key": "Terminal",
+      "keyColor": "#a0f0c0"
+    },
+    {
+      "type": "wm",
+      "key": "WM",
+      "keyColor": "#a0f0c0"
+    },
+    {
+      "type": "cpu",
+      "key": "CPU",
+      "keyColor": "#a0f0c0"
+    },
+    {
+      "type": "gpu",
+      "key": "GPU",
+      "keyColor": "#a0f0c0"
+    },
+    {
+      "type": "memory",
+      "key": "Memory",
+      "keyColor": "#a0f0c0"
+    },
+    {
+      "type": "disk",
+      "key": "Disk",
+      "keyColor": "#a0f0c0"
+    },
+    {
+      "type": "colors",
+      "perLine": 8
+    }
+  ],
+  "display": {
+    "color": {
+      "keys": "#a0f0c0",
+      "title": "#a0f0c0"
+    },
+    "separator": "─"
+  }
+}
+

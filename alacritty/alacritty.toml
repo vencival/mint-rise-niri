@@ -1,0 +1,32 @@
+# Основные настройки окна
+[window]
+opacity = 0.65          # Прозрачность фона (0.0 - полностью прозрачный, 1.0 - непрозрачный)
+padding.x = 10          # Отступ слева/справа
+padding.y = 10          # Отступ сверху/снизу
+dynamic_padding = true  # Автоматически центрировать содержимое
+
+# Шрифт (выбери тот, что тебе нравится)
+[font]
+normal = { family = "Monaspace Krypton", style = "Regular" }
+size = 11.0
+builtin_box_drawing = true
+
+# Цветовая схема (твой любимый зелёный акцент!)
+[colors.primary]
+background = "#000000"    # Тёмный фон, как у GitHub Dark
+foreground = "#c9d1d9"    # Светлый текст
+
+[colors.normal]
+black   = "#0d1117"
+red     = "#ff7b72"       # Красный для ошибок
+green   = "#3fb950"       # Зелёный для успеха
+yellow  = "#d29922"       # Жёлтый для предупреждений
+blue    = "#58a6ff"       # Синий для информации
+magenta = "#bc8cff"       # Фиолетовый
+cyan    = "#39c5cf"       # Бирюзовый
+white   = "#c9d1d9"
+
+# Курсор
+[cursor]
+style = { shape = "Beam", blinking = "On" }
+blink_interval = 500      # Мигание каждые 500мс

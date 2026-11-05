@@ -1,0 +1,16 @@
+#!/bin/sh
+export XCURSOR_THEME="Bibata-Modern-Ice"
+export XCURSOR_SIZE=22
+
+# Указываем правильный путь для runtime-файлов
+export XDG_RUNTIME_DIR=/run/user/$(id -u)
+export XDG_SESSION_TYPE=xwayland
+export XDG_CURRENT_DESKTOP=niri
+
+# Запускаем аудиосервисы PipeWire в фоне
+pipewire &
+wireplumber &
+pipewire-pulse &
+
+# Execute dbus session
+dbus-run-session niri
